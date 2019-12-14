@@ -2,21 +2,21 @@ import 'source-map-support/register'
 import { createLogger } from '../../utils/logger'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { getuserId } from '../../BusinessLogic/userauthentication'
-import { gettodos } from '../../DataLayer/ToDoAccess'
+import { getphotoitems } from '../../DataLayer/PhotoAccess'
 
-const logger = createLogger('gettodo')
+const logger = createLogger('getPhotoDescription')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Processing event: ', event)
   const userId = getuserId(event)
-  const resultget = await gettodos(userId)
+  const resultget = await getphotoitems(userId)
   let statusCode = 201
   if (!resultget) {
-    logger.error("Unable to get ToDos")
+    logger.error("Unable to get Photos")
     statusCode = 404
   } 
   else {
-    logger.info("GetToDos succeeded:")
+    logger.info("Get Photos succeeded:")
     }
   const items = resultget.Items
   logger.info("items",items)

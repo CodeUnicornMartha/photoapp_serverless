@@ -1,29 +1,29 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
-import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
+import { CreatePhotoRequest } from '../../requests/CreatePhotoRequest'
 import { getuserId } from '../../BusinessLogic/userauthentication'
 import * as uuid from 'uuid'
-import { createtodo } from '../../DataLayer/ToDoAccess'
+import { createphotodescription } from '../../DataLayer/PhotoAccess'
 
-const logger = createLogger('createtodo')
+const logger = createLogger('createPhotoDescription')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
-  const newTodo: CreateTodoRequest = JSON.parse(event.body)
-  const ToDoTable = process.env.ToDo_TABLE
+  const newPhoto: CreatePhotoRequest = JSON.parse(event.body)
+  const PhotoTable = process.env.Photo_TABLE
   const userId = getuserId(event)
-  const todoId = uuid.v4()
-  logger.info("key", todoId)
-  const newTodoitem = await createtodo(userId, newTodo, todoId)
+  const photoId = uuid.v4()
+  logger.info("key", photoId)
+  const newPhotoitem = await createphotodescription(userId, newPhoto, photoId)
   let statusCode = 201
-      if (!newTodoitem) {
+      if (!newPhotoitem) {
         logger.error("Unable to create To Do")
         statusCode = 404
     } else {
         logger.info("CreateItem succeeded:")
       }
-  logger.info("newTodoitem", newTodoitem)
+  logger.info("newPhotoitem", newPhotoitem)
     return {
       statusCode: statusCode,
       headers: {
@@ -32,10 +32,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       },
       body: JSON.stringify({
         item: {
-          todoId: todoId,
-          TableName: ToDoTable,
+          photoId: photoId,
+          PhotoTable: PhotoTable,
           userId: userId,
-          ... newTodoitem
+          ... newPhotoitem
         }
       })
 

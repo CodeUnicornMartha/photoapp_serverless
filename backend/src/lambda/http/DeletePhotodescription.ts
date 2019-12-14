@@ -2,22 +2,22 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
 import { getuserId } from '../../BusinessLogic/userauthentication'
-import { deletetodo } from '../../DataLayer/ToDoAccess'
+import { deletePhotoDescription } from '../../DataLayer/PhotoAccess'
 
-const logger = createLogger('deleteToDo')
+const logger = createLogger('deletePhotoDescription')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userId = getuserId(event)
   logger.info("userid", userId)
   
-  const todoId = event.pathParameters.todoId
-  logger.info("todoid", todoId)
+  const photoId = event.pathParameters.photoId
+  logger.info("photoId", photoId)
   
-  const resultdelete = await deletetodo(userId, todoId)
+  const resultdelete = await deletePhotoDescription(userId, photoId)
   logger.info("resultdeletehttp", resultdelete)
   let statusCode = 200
   if (!resultdelete) {
-    logger.error("Unable to delete To Do")
+    logger.error("Unable to delete Photo description")
     statusCode = 404
   } 
   else {

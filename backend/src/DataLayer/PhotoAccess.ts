@@ -1,43 +1,43 @@
-import { CreateTodoRequest } from '../requests/CreateTodoRequest'
+import { CreatePhotoRequest } from '../requests/CreatePhotoRequest'
 import { createLogger } from '../utils/logger'
 import * as AWS  from 'aws-sdk'
-import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { UpdatePhotoRequest } from '../requests/UpdatePhotoRequest'
 import * as AWSXRAY from 'aws-xray-sdk'
 import * as uuid from 'uuid'
 
 const logger = createLogger('DataLayer')
 const XAWS = AWSXRAY.captureAWS(AWS)
 
-export async function createtodo(userId: string, todo: CreateTodoRequest, todoId: string) {
+export async function createphotodescription(userId: string, photo: CreatePhotoRequest, photoId: string) {
     const docClient = new XAWS.DynamoDB.DocumentClient
     const timestamp = (new Date()).toISOString()
-    const ToDoTable = process.env.ToDo_TABLE
-    const newTodoitem = {
+    const PhotoTable = process.env.Photo_TABLE
+    const newPhotoitem = {
         userId: userId,
         createdAt: timestamp,
-        todoId: todoId,
-        name: todo.name,
-        dueDate: todo.dueDate
+        photoId: photoId,
+        name: photo.name,
+        dueDate: photo.dueDate
       }
-      logger.info("newTodoitem", newTodoitem)
+      logger.info("newPhotoitem", newPhotoitem)
     const resultcreatedata = await docClient.put({
-        TableName: ToDoTable,
-        Item: newTodoitem      
+        TableName: PhotoTable,
+        Item: newPhotoitem      
       }).promise()
     logger.info("resultcreate", resultcreatedata)
-    return newTodoitem
+    return newPhotoitem
 }
 
-export async function deletetodo(userId: string, todoId: string) {
+export async function deletePhotoDescription(userId: string, photoId: string) {
     const docClient = new XAWS.DynamoDB.DocumentClient
-    const ToDoTable = process.env.ToDo_TABLE
+    const PhotoTable = process.env.Photo_TABLE
     const Key = {
-        todoId: todoId,
+        photoId: photoId,
         userId: userId
         }
     logger.info("Key", Key)
     const resultdeletedata = await docClient.delete({
-        TableName: ToDoTable,
+        TableName: PhotoTable,
         Key: Key
       }).promise()
       logger.info("resultdelete", resultdeletedata)
@@ -45,12 +45,12 @@ export async function deletetodo(userId: string, todoId: string) {
       return resultdeletedata
 }
 
-export async function gettodos(userId: string){
+export async function getphotoitems(userId: string){
     const docClient = new XAWS.DynamoDB.DocumentClient
-    const ToDoTable = process.env.ToDo_TABLE
+    const PhotoTable = process.env.Photo_TABLE
     const UserIdINDEX = process.env.UserIdINDEX
     const resultgetdata = await docClient.query({
-        TableName: ToDoTable,
+        PhotoTable: PhotoTable,
         IndexName: UserIdINDEX,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
@@ -62,42 +62,42 @@ export async function gettodos(userId: string){
     return resultgetdata
 }
 
-export async function ToDoExists(todoId: string, userId: string) {
-    const ToDoTable = process.env.ToDo_TABLE
+export async function PhotoExists(photoId: string, userId: string) {
+    const PhotoTable = process.env.Photo_TABLE
     const docClient = new XAWS.DynamoDB.DocumentClient()
     const result = await docClient.get({
-        TableName: ToDoTable,
+        TableName: PhotoTable,
         Key: {
-          todoId: todoId,
+          photoId: photoId,
           userId: userId
         }
       }).promise()
   
-    logger.info('Get ToDo: ', result)
+    logger.info('Get Photos: ', result)
     return !!result.Item
   }
   
- export function getUploadUrl(todoId: string) {
+ export function getUploadUrl(photoId: string) {
     const s3 = new XAWS.S3({ signatureVersion: 'v4'})
-    const bucketName = process.env.ToDo_S3_BUCKET
+    const bucketName = process.env.Photo_S3_BUCKET
     const urlExpiration = process.env.SIGNED_URL_EXPIRATION
     return s3.getSignedUrl('putObject', {
       Bucket: bucketName,
-      Key: todoId,
+      Key: photoId,
       Expires: urlExpiration
     })
   }
 
-export async function updateuploadurl(todoId: string, userId: string){
-    const ToDoTable = process.env.ToDo_TABLE
-    const bucketName = process.env.ToDo_S3_BUCKET
+export async function updateuploadurl(photoId: string, userId: string){
+    const PhotoTable = process.env.Photo_TABLE
+    const bucketName = process.env.Photo_S3_BUCKET
     const docClient = new XAWS.DynamoDB.DocumentClient()
     const imageid = uuid.v4()
     const imageUrl =  `https://${bucketName}.s3.amazonaws.com/${imageid}`
     const resultuploadurldb = await docClient.update({
-        TableName: ToDoTable,
+        TableName: PhotoTable,
         Key: {
-          todoId: todoId,
+          photoId: photoId,
           userId: userId
         },
         UpdateExpression: 'set uploadUrl = :uploadUrl',
@@ -111,22 +111,22 @@ export async function updateuploadurl(todoId: string, userId: string){
     return resultuploadurldb
 }
 
-export async function updatetodo( updatedTodo: UpdateTodoRequest, todoId: string, userId: string){
-  const ToDoTable = process.env.ToDo_TABLE
+export async function updatephotoitems( updatedPhoto: UpdatePhotoRequest, photoId: string, userId: string){
+  const PhotoTable = process.env.Photo_TABLE
   const docClient = new XAWS.DynamoDB.DocumentClient()
-  const todoname = updatedTodo.name
-  const done = updatedTodo.done
-  const dueDate = updatedTodo.dueDate
+  const photoname = updatedPhoto.name
+  const done = updatedPhoto.done
+  const dueDate = updatedPhoto.dueDate
 
   const resultupdatedata = await docClient.update({
-    TableName: ToDoTable,
+    TableName: PhotoTable,
     Key: {
-      todoId: todoId,
+      photoId: photoId,
       userId: userId
     },
-    UpdateExpression: 'set todoname = :todoname, done = :done, dueDate = :dueDate',
+    UpdateExpression: 'set photoname = :photoname, done = :done, dueDate = :dueDate',
     ExpressionAttributeValues: {
-      ':todoname': todoname,
+      ':photoname': photoname,
       ':done': done,
       ':dueDate': dueDate
 

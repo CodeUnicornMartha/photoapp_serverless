@@ -112,6 +112,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       </div>
     )
   }
+  
 
   renderCreateTodoInput() {
     return (
@@ -130,6 +131,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
             placeholder="Describe your Photos which changed your world..."
             onChange={this.handleNameChange}
           />
+          
         </Grid.Column>
         <Grid.Column width={16}>
           <Divider />

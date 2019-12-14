@@ -2,30 +2,30 @@ import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
 import { getuserId } from '../../BusinessLogic/userauthentication'
-import { ToDoExists, getUploadUrl, updateuploadurl} from '../../DataLayer/ToDoAccess'
+import { PhotoExists, getUploadUrl, updateuploadurl} from '../../DataLayer/PhotoAccess'
 
 const logger = createLogger('generateuploadurl')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
+  const photoId = event.pathParameters.photoId
   const userId = getuserId(event)
   
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-  const validToDoId = await ToDoExists(todoId, userId)
-  logger.info("validtodoid", validToDoId)
+  const validPhotoId = await PhotoExists(photoId, userId)
+  logger.info("validphotoid", validPhotoId)
 
-  if (!validToDoId) {
+  if (!validPhotoId) {
     return {
       statusCode: 404,
       body: JSON.stringify({
-        error: 'ToDo does not exist'
+        error: 'Photo does not exist'
       })
     }
   }
-  const uploadUrl = getUploadUrl(todoId)
+  const uploadUrl = getUploadUrl(photoId)
   logger.info("url", uploadUrl)
  
-  const updatedurldb = updateuploadurl(todoId, userId)
+  const updatedurldb = updateuploadurl(photoId, userId)
   logger.info("updatedurldb", updatedurldb)
 
   return {

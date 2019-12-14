@@ -1,25 +1,25 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { createLogger } from '../../utils/logger'
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
+import { UpdatePhotoRequest } from '../../requests/UpdatePhotoRequest'
 import { getuserId } from '../../BusinessLogic/userauthentication'
-import { updatetodo } from '../../DataLayer/ToDoAccess'
+import { updatephotoitems } from '../../DataLayer/PhotoAccess'
 
-const logger = createLogger('updatetodo')
+const logger = createLogger('updatePhotoDescription')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
-  const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
+  const photoId = event.pathParameters.photoId
+  const updatedPhotoDescription: UpdatePhotoRequest = JSON.parse(event.body)
   const userId = getuserId(event)
 
-  const resultupdate = await updatetodo(updatedTodo, todoId, userId)
+  const resultupdate = await updatephotoitems(updatedPhotoDescription, photoId, userId)
   
   let statusCode = 201
   if (!resultupdate) {
-    logger.error("Unable to update ToDos")
+    logger.error("Unable to update Photo Description")
     statusCode = 404
 } else {
-    logger.info("UpdateToDo succeeded:", resultupdate)
+    logger.info("Update Photo Description succeeded:", resultupdate)
   }
       
 return {
