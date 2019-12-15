@@ -3,7 +3,6 @@ import { createLogger } from '../utils/logger'
 import * as AWS  from 'aws-sdk'
 import { UpdatePhotoRequest } from '../requests/UpdatePhotoRequest'
 import * as AWSXRAY from 'aws-xray-sdk'
-import * as uuid from 'uuid'
 
 const logger = createLogger('DataLayer')
 const XAWS = AWSXRAY.captureAWS(AWS)
@@ -92,8 +91,7 @@ export async function updateuploadurl(photoId: string, userId: string){
     const PhotoTable = process.env.Photo_TABLE
     const bucketName = process.env.Photo_S3_BUCKET
     const docClient = new XAWS.DynamoDB.DocumentClient()
-    const imageid = uuid.v4()
-    const imageUrl =  `https://${bucketName}.s3.amazonaws.com/${imageid}`
+    const imageUrl =  `https://${bucketName}.s3.amazonaws.com/${photoId}`
     const resultuploadurldb = await docClient.update({
         TableName: PhotoTable,
         Key: {
