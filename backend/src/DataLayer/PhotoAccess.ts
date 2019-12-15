@@ -49,7 +49,7 @@ export async function getphotoitems(userId: string){
     const PhotoTable = process.env.Photo_TABLE
     const UserIdINDEX = process.env.UserIdINDEX
     const resultgetdata = await docClient.query({
-        PhotoTable: PhotoTable,
+        TableName: PhotoTable,
         IndexName: UserIdINDEX,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {

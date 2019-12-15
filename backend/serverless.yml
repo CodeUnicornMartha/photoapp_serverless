@@ -66,8 +66,8 @@ functions:
           - "*"
 
   # TODO: Configure this function
-  CreatePhotodescription:
-    handler: src/lambda/http/CreatePhotodescription.handler
+  CreatePhotos:
+    handler: src/lambda/http/CreatePhotos.handler
     events:
       - http:
           method: post
@@ -98,8 +98,8 @@ functions:
           - "*"
 
   # TODO: Configure this function
-  UpdatePhotodescription:
-    handler: src/lambda/http/UpdatePhotodescription.handler
+  UpdatePhotos:
+    handler: src/lambda/http/UpdatePhotos.handler
     events:
       - http:
           method: patch
@@ -131,8 +131,8 @@ functions:
           - "*"
 
   # TODO: Configure this function
-  DeletePhotodescription:
-    handler: src/lambda/http/DeletePhotodescription.handler
+  DeletePhotos:
+    handler: src/lambda/http/DeletePhotos.handler
     events:
       - http:
           method: delete
@@ -163,7 +163,7 @@ functions:
 
   # TODO: Configure this function
   GenerateUploadUrl:
-    handler: src/lambda/http/generateUploadUrl.handler
+    handler: src/lambda/http/GenerateUploadUrl.handler
     events:
       - http:
           method: post
