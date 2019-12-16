@@ -161,6 +161,7 @@ export async function updatephotoitems( updatedPhoto: UpdatePhotoRequest, photoI
   // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.06
   // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.03
   // https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/s3-example-presigned-urls.html
+  // https://github.com/CodeUnicornMartha/serverless_todo_app.git
   // https://serverless.com/plugins/serverless-plugin-tracing/
   // https://github.com/alex-murashkin/serverless-plugin-tracing
   // https://medium.com/@glicht/using-aws-x-ray-to-achieve-least-privilege-permissions-93dfd6701318
